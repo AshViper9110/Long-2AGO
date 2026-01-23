@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Long2AGO.Server.props" />
+</Project>

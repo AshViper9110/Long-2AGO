@@ -1,0 +1,27 @@
+using Microsoft.OpenApi.Models;
+var builder = WebApplication.CreateBuilder(args);
+var magiconion = builder.Services.AddMagicOnion();
+if (builder.Environment.IsDevelopment()) {
+    magiconion.AddJsonTranscoding();
+    builder.Services.AddMagicOnionJsonTranscodingSwagger();
+}
+builder.Services.AddSwaggerGen(options => {
+options.IncludeMagicOnionXmlComments(Path.Combine(AppContext.BaseDirectory, "Long2AGO.Shared.xml"));
+    options.SwaggerDoc("v1", new OpenApiInfo {
+        Version = "v1",
+        Title = "Long2AGO",
+        Description = "Long2AGO API",
+    });
+});
+builder.Services.AddMvcCore().AddApiExplorer();
+var app = builder.Build();
+if (app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI(c => {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Long2AGO");
+    });
+}
+app.MapMagicOnionService();
+app.MapGet("/", () => "");
+
+app.Run();

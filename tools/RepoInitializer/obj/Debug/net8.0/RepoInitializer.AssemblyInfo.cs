@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RepoInitializer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc017bc85f52ca4e5a2cf8b4efb2e551218c2dca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb0d9d51579838cf471e89749d451c08b7b3fbf7")]
 [assembly: System.Reflection.AssemblyProductAttribute("RepoInitializer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RepoInitializer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
