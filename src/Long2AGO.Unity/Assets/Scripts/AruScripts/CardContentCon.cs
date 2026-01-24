@@ -11,29 +11,53 @@ public class CardContentCon : MonoBehaviour
 
     //カードの保持用変数
     int cardId;
-    string cardName;
-    int cardPower;
+    int cardtype;
+    long cardPower;
 
-    CardCon cardCon;
+    GameDrector gameDirector;
 
     private void Start()
     {
         //CardConを持っているObjectをさがしてCardConのScriptを取得する
-        cardCon = GameObject.Find("CardCon").GetComponent<CardCon>();
+        gameDirector = GameObject.Find("GameDrector").GetComponent<GameDrector>();
     }
 
     //CardのContentを設定する
-    public void SetCardContent(int id, string name, int power)
+    public void SetCardContent(int typeid, int cardid, int power)
     {
         foreach (GameObject card in cardMeshs)
         {
             card.SetActive(false);
         }
-        cardId = id;
-        cardName = name;
+
+        name = "none";
+
+        switch (cardid)
+        {
+            case 0:
+                switch (typeid)
+                {
+                    case 0:
+                        name = "けん";
+                        break;
+                    case 1:
+                        name = "たて";
+                        break;
+                    case 2:
+                        name = "かいふく";
+                        break;
+                }
+                break;
+            case 1:
+                name = "バフ";
+                break;
+        }
+
+        cardId = typeid;
+        cardtype = cardid;
         cardPower = power;
 
-        cardMeshs[id].SetActive(true);
+        cardMeshs[typeid].SetActive(true);
         nameText.text = name;
         numText.text = power.ToString();
     }
@@ -42,7 +66,6 @@ public class CardContentCon : MonoBehaviour
     private void OnMouseDown()
     {
         Destroy(this.gameObject);
-        cardCon.NextTurn();
-        Debug.Log($"== Card Touth ==\nID: {cardId} Name: {cardName} Power: {cardPower}");
+        gameDirector.UseCard(cardId, cardtype, cardPower);
     }
 }
