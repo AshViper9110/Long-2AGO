@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Long2AGO.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63837f06f1a105292d0192bb65582edd76c9d8e3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1200d276be40b8d1894189b5a1eec7de15a76c13")]
 [assembly: System.Reflection.AssemblyProductAttribute("Long2AGO.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Long2AGO.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

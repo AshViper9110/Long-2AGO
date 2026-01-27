@@ -3,12 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class GameDrector : MonoBehaviour
+public class GameDirector : MonoBehaviour
 {
     [Header("Content")]
     public GameObject cardPrefabs;      //カードprefab
     public int cardMax = 5;             //カードを引く枚数
     public int cardSpacing = 25;        //カードの間隔
+    public bool isMyTurn = true;
+    public EnemyCPU enemyCPU;
 
     [Header("Text")]
     public Text turnText;
@@ -16,21 +18,74 @@ public class GameDrector : MonoBehaviour
     public Text useText;
     public Text HpText;
 
+    [Header("Result")]
+    public GameObject resultPanel;
+    public Text resultText;
+
     [Header("Player")]
     public long playerHp = 100;
     public long playerAt = 0;
     public long playerDf = 0;
 
+    //private変数
     private List<GameObject> handCards = new List<GameObject>();
     private int turnCount = 0;
     private long buffNum = 0;
+    private bool isEndGame = false;
 
-    private void Start()
+    //外部呼び出し用関数
+    public bool GetMyTurn()
     {
+        return isMyTurn;
+    }
+    public bool GetEndGame()
+    {
+        return isEndGame;
+    }
+    public void EnemyDead()
+    {
+        isEndGame = true;
+        resultPanel.SetActive(true);
+        resultText.text = "You Win!!";
+    }
+    public void EnemyAttack(long power)
+    {
+        power = power - playerDf;
+        if (power < 0) return;
+        playerHp -= power;
+        HpText.text = "HP: " + playerHp;
+        if (playerHp <= 0) Dead();
+    }
+    public void EndTurn()
+    {
+        Debug.Log("Your Turn");
+        isMyTurn = true;
+        turnCount++;
+        DrowCard();
+        if (turnCount % 6 == 0)
+        {
+            buffNum = 0;
+            buffText.text = "Buff: " + buffNum.ToString();
+        }
+        turnText.text = "TurnCount: " + turnCount.ToString();
+        Debug.Log($"Turn Count: {turnCount}");
+    }
+    public void Retry()
+    {
+        Init();
+    }
+
+    //====================================================================
+    private void Start()
+    {   
         Init();
     }
     private void Init()
     {
+        resultPanel.SetActive(false);
+        resultText.text = "";
+        isMyTurn = true;
+        isEndGame = false;
         playerHp = 100;
         playerAt = 0;
         playerDf = 0;
@@ -39,17 +94,16 @@ public class GameDrector : MonoBehaviour
         buffText.text = "Buff: " + buffNum;
         useText.text = "Power: " + 0;
         HpText.text = "HP: " + playerHp;
-        turnText.text = "TurnCount: " + turnCount.ToString();
+        turnText.text = "TurnCount: " + turnCount;
         SetCards();
+        enemyCPU.Init();
     }
-
-    private int SetPower(int turn)
+    private long SetPower(int turn)
     {
         int tDiv5 = turn / 5;
         int tXor = turn ^ tDiv5;
         return (Random.Range(0 + tXor, 9 + tXor) * turn ^ turn ^ tXor) * tXor;
     }
-
     public void SetCards()
     {
         //handCardsにモノが入っていれば削除
@@ -72,7 +126,6 @@ public class GameDrector : MonoBehaviour
         }
         Debug.Log($"Set Cards");
     }
-
     void ReLayoutHand()
     {
         // Destroy済み(null)を除去
@@ -109,7 +162,6 @@ public class GameDrector : MonoBehaviour
 
         card.GetComponent<CardContentCon>().SetCardContent(Random.Range(0, 3), Random.Range(0, 2), SetPower(turnCount));
     }
-
     public void UseCard(int typeid, int cardid, long power)
     {
         long endPower = 0;
@@ -128,6 +180,7 @@ public class GameDrector : MonoBehaviour
                 {
                     case 0:
                         playerAt += endPower;
+                        enemyCPU.AttackPlayer(playerAt);
                         break;
                     case 1:
                         playerDf += endPower;
@@ -146,18 +199,16 @@ public class GameDrector : MonoBehaviour
         }
         NextTurn();
     }
-
-
     private void NextTurn()
     {
-        turnCount++;
-        DrowCard();
-        if (turnCount % 6 == 0)
-        {
-            buffNum = 0;
-            buffText.text = "Buff: " + buffNum.ToString();
-        }
-        turnText.text = "TurnCount: " + turnCount.ToString();
-        Debug.Log($"Turn Count: {turnCount}");
+        isMyTurn = false;
+        enemyCPU.Move(Random.Range(0, 3), Random.Range(0, 2), SetPower(turnCount), turnCount);
+    }
+    private void Dead()
+    {
+        isEndGame = true;
+        resultPanel.SetActive(true);
+        resultText.text = "You Lose...";
+        Debug.Log("Your Dead");
     }
 }

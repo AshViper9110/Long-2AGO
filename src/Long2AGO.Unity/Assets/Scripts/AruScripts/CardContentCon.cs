@@ -14,16 +14,15 @@ public class CardContentCon : MonoBehaviour
     int cardtype;
     long cardPower;
 
-    GameDrector gameDirector;
+    GameDirector gameDirector;
 
     private void Start()
     {
         //CardConを持っているObjectをさがしてCardConのScriptを取得する
-        gameDirector = GameObject.Find("GameDrector").GetComponent<GameDrector>();
+        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
     }
-
     //CardのContentを設定する
-    public void SetCardContent(int typeid, int cardid, int power)
+    public void SetCardContent(int typeid, int cardid, long power)
     {
         foreach (GameObject card in cardMeshs)
         {
@@ -59,12 +58,12 @@ public class CardContentCon : MonoBehaviour
 
         cardMeshs[typeid].SetActive(true);
         nameText.text = name;
-        numText.text = power.ToString();
+        numText.text = "+" + power;
     }
-
     //カードが使われたら削除してcardConの関数を呼び出す
     private void OnMouseDown()
     {
+        if (!gameDirector.GetMyTurn() || gameDirector.GetEndGame()) return;
         Destroy(this.gameObject);
         gameDirector.UseCard(cardId, cardtype, cardPower);
     }
